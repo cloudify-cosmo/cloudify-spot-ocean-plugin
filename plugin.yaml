@@ -1,0 +1,15 @@
+plugins:
+  spot-ocean:
+    executor: central_deployment_agent
+    package_name: cloudify-spot-ocean-plugin
+    package_version: '0.0.1'
+
+data_types:
+
+dsl_definitions:
+
+node_types:
+
+relationships:
+
+workflows:
