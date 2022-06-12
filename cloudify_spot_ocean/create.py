@@ -1,50 +1,62 @@
 from spotinst_sdk2 import SpotinstSession
 from spotinst_sdk2.models.ocean import aws
 
-
-def create(token=None, account=None, **args):
-  session = SpotinstSession(auth_token=token, account_id=account)
-  client = session.client("ocean_aws")
-  
-  args = args["args"]
-
-  ################ Compute ################
-  launch_specification = aws.LaunchSpecifications(
-    security_group_ids=args["security_group_ids"],
-    image_id=args["image_id"], 
-    key_pair=args["key_pair"])
-
-  instance_types = aws.InstanceTypes(whitelist=[args["instance_types"]])
-
-  compute = aws.Compute(instance_types=instance_types, 
-                        subnet_ids=args["subnet_ids"], 
-                        launch_specification=launch_specification)
-
-  ################ Strategy ################
-
-  strategy = aws.Strategy(utilize_reserved_instances=False, 
-                          fallback_to_od=True, 
-                          spot_percentage=100)
-
-  ################ Capacity ################
-
-  capacity = aws.Capacity(minimum=1, maximum=10, target=3)
-
-  ################# Ocean #################
-
-  ocean = aws.Ocean(name="Ocean SDK Test", 
-                    controller_cluster_id=args["ocean_cluster_name"], 
-                    region="us-east-1", 
-                    capacity=capacity, 
-                    strategy=strategy, 
-                    compute=compute)
+# Cloudify
+from cloudify import ctx
 
 
+def create():
 
-  return client.create_ocean_cluster(ocean=ocean)
+    session = \
+        SpotinstSession(auth_token=ctx.instance.runtime_properties[
+            "SpotOceanToken"],
+                        account_id=ctx.instance.runtime_properties[
+            "AccountID"])
+    client = session.client("ocean_aws")
+
+    ################ Compute ################
+    launch_specification = aws.LaunchSpecifications(
+        security_group_ids=ctx.instance.runtime_properties[
+            "security_group_ids"],
+        image_id=ctx.instance.runtime_properties["image_id"],
+        key_pair=ctx.instance.runtime_properties["key_pair"])
+
+    instance_types = aws.InstanceTypes(whitelist=[
+        ctx.instance.runtime_properties["instance_types"]])
+
+    compute = aws.Compute(instance_types=instance_types,
+                          subnet_ids=ctx.instance.runtime_properties[
+                              "subnet_ids"],
+                          launch_specification=launch_specification)
+
+    ################ Strategy ################
+
+    strategy = aws.Strategy(utilize_reserved_instances=False,
+                            fallback_to_od=True,
+                            spot_percentage=100)
+
+    ################ Capacity ################
+
+    capacity = aws.Capacity(minimum=1, maximum=4, target=1)
+
+    ################# Ocean #################
+
+    ocean = aws.Ocean(name="Ocean SDK Test",
+                      controller_cluster_id=ctx.instance.runtime_properties[
+                          "ocean_cluster_name"],
+                      region="us-east-1",
+                      capacity=capacity,
+                      strategy=strategy,
+                      compute=compute)
+
+    create_response = client.create_ocean_cluster(ocean=ocean)
+    instance_id = create_response["id"]
+    ctx.instance.runtime_properties["create_response"] = create_response
+    ctx.instance.runtime_properties["instance_id"] = instance_id
+
 
 if __name__ == '__main__':
-  create(token=token,account=account,args=args)
+  create(token=token, account=account, args=args)
 
 
 
