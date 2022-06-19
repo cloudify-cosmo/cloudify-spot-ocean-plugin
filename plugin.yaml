@@ -5,35 +5,64 @@ plugins:
     package_version: '0.0.1'
 
 data_types:
-#  cloudify.datatypes.SpotOcean.Cluster.config:
-#    properties:
-#      OceanClusterName:
-#        type: string
-#        description: The name of the EKS cluster to operate on.
-#        required: true
-#      InstanceTypes:
-#        type: string
-#        description: AWS Instance Type to be used.
-#        default: "t3.medium"
-#      SecurityGroupIDs:
-#        type: list
-#        description: A list of the security groups ids in the EKS cluster.
-#        required: true
-#      ImageID:
-#        type: string
-#        default: "ami-0319c884da18af515"
-#      KeyPair:
-#        type: string
-#        description: The key pair of the EKS cluster
-#        required: true
-#      SubnetIDs:
-#        type: list
-#        description: Specifies whether the user is required to set a new password on next sign-in.
-#        required: true
-#      kwargs:
-#        description:
-#        default: { }
-#
+
+  cloudify.datatypes.SpotOcean.ConnectionConfig:
+    properties:
+      account_id:
+        type: string
+        description: The account ID of the spot ocean user.
+        required: true
+      spot_ocean_token:
+        type: string
+        description: The Token of the spot ocean user.
+        required: true
+
+  cloudify.datatypes.SpotOcean.Cluster.config:
+    properties:
+      OceanClusterName:
+        type: string
+        description: The for cluster in Spot Ocean.
+        required: true
+      ClusterID:
+        type: string
+        description: The name of the EKS cluster to operate on.
+        required: true
+      Region:
+        type: string
+        description: AWS region.
+        required: true
+      InstanceTypes:
+        type: string
+        description: AWS Instance Type to be used.
+        req: "t3.medium"
+      SecurityGroupIDs:
+        type: list
+        description: A list of the security groups ids in the EKS cluster.
+        required: true
+      ImageID:
+        type: string
+        default: "ami-0319c884da18af515"
+      KeyPair:
+        type: string
+        description: The key pair of the EKS cluster
+        required: true
+      SubnetIDs:
+        type: list
+        description: Specifies whether the user is required to set a new password on next sign-in.
+        required: true
+      MinCapacity:
+        type: integer
+        default: 1
+      MaxCapacity:
+        type: integer
+        default: 1
+      TargetCapacity:
+        type: integer
+        default: 1
+      kwargs:
+        description:
+        default: { }
+
 #  cloudify.datatypes.SpotOcean.Credentials.config:
 #    properties:
 #      AccountID:
@@ -45,40 +74,27 @@ data_types:
 #        description: The Token of the spot ocean user.
 #        required: true
 
+
+dsl_definitions:
+
+  # Every resource uses this property unless noted.
+  client_config: &client_config
+    client_config:
+      description: >
+        A dictionary of values to pass to authenticate with the SpotOcean API.
+      type: cloudify.datatypes.SpotOcean.ConnectionConfig
+      required: false
+
 node_types:
   cloudify.nodes.SpotOcean.cluster:
     derived_from: cloudify.nodes.Root
       properties:
-        AccountID:
-          type: string
-          description: The account ID of the spot ocean user.
-          required: true
-        SpotOceanToken:
-          type: string
-          description: The Token of the spot ocean user.
-          required: true
-        OceanClusterName:
-          type: string
-          description: The name of the EKS cluster to operate on.
-          required: true
-        InstanceTypes:
-          type: string
-          description: AWS Instance Type to be used.
-          default: "t3.medium"
-        SecurityGroupIDs:
-          type: list
-          description: A list of the security groups ids in the EKS cluster.
-          required: true
-        ImageID:
-          type: string
-          default: "ami-0319c884da18af515"
-        KeyPair:
-          type: string
-          description: The key pair of the EKS cluster
-          required: true
-        SubnetIDs:
-          type: list
-          description: Specifies whether the user is required to set a new password on next sign-in.
+        <<: *client_config
+        resource_config:
+          description: >
+            Data of specific parts of the Cluster needed inorder for
+            spot ocean to monitor the cluster.
+          type: cloudify.datatypes.SpotOcean.Cluster.config
           required: true
       interfaces:
         cloudify.interfaces.lifecycle:
@@ -86,6 +102,15 @@ node_types:
             implementation: SpotOcean.cloudify_spot_ocean.cluster.create
           delete:
             implementation: SpotOcean.cloudify_spot_ocean.cluster.delete
+
+#        client_config:
+#          spot_ocean_token: { get_secret: token }
+#          account_id: { get_secret: account_id }
+#        resource_config:
+#         subnet: []
+#         security_group_ids: []
+#         keypair: []
+#
 
 
 relationships:
