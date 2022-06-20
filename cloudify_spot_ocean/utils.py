@@ -32,8 +32,8 @@ def get_client_config(target=False):
 
 def get_client():
     client_config = get_client_config()
-    session = SpotinstSession(auth_token=client_config["SpotOceanToken"],
-                              account_id=client_config["AccountID"])
+    session = SpotinstSession(auth_token=client_config.get("SpotOceanToken"),
+                              account_id=client_config.get("AccountID"))
     client = session.client("ocean_aws")
 
     return client
