@@ -1,4 +1,5 @@
 import decorators
+from cloudify.exceptions import NonRecoverableError
 from ..spot_ocean_sdk import spot_ocean
 
 
@@ -31,7 +32,10 @@ def create(client, ctx, resource_config):
         strategy=strategy,
         compute=compute)
     create_response = client.create_ocean_cluster(ocean=ocean)
-    instance_id = create_response.get("id", {})
+    instance_id = create_response.get("id", None)
+    if not instance_id:
+        raise NonRecoverableError(
+            'cluster not added successfully to spot ocean')
     ctx.instance.runtime_properties["create_response"] = create_response
     ctx.instance.runtime_properties["instance_id"] = instance_id
 

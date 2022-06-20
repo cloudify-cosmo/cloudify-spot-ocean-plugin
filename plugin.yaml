@@ -34,14 +34,15 @@ data_types:
       InstanceTypes:
         type: string
         description: AWS Instance Type to be used.
-        req: "t3.medium"
+        default: "t3.medium"
       SecurityGroupIDs:
         type: list
         description: A list of the security groups ids in the EKS cluster.
         required: true
       ImageID:
         type: string
-        default: "ami-0319c884da18af515"
+        default: { get_attribute: [ ami, aws_resource_id ] }
+        # default: "ami-0319c884da18af515"
       KeyPair:
         type: string
         description: The key pair of the EKS cluster
@@ -63,18 +64,6 @@ data_types:
         description:
         default: { }
 
-#  cloudify.datatypes.SpotOcean.Credentials.config:
-#    properties:
-#      AccountID:
-#        type: string
-#        description: The account ID of the spot ocean user.
-#        required: true
-#      SpotOceanToken:
-#        type: string
-#        description: The Token of the spot ocean user.
-#        required: true
-
-
 dsl_definitions:
 
   # Every resource uses this property unless noted.
@@ -83,7 +72,6 @@ dsl_definitions:
       description: >
         A dictionary of values to pass to authenticate with the SpotOcean API.
       type: cloudify.datatypes.SpotOcean.ConnectionConfig
-      required: false
 
 node_types:
   cloudify.nodes.SpotOcean.cluster:
@@ -102,16 +90,6 @@ node_types:
             implementation: SpotOcean.cloudify_spot_ocean.cluster.create
           delete:
             implementation: SpotOcean.cloudify_spot_ocean.cluster.delete
-
-#        client_config:
-#          spot_ocean_token: { get_secret: token }
-#          account_id: { get_secret: account_id }
-#        resource_config:
-#         subnet: []
-#         security_group_ids: []
-#         keypair: []
-#
-
 
 relationships:
 
