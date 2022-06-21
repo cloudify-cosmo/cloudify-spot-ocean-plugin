@@ -38,3 +38,6 @@ def get_client():
 
     return client
 
+
+def validate_resource_config(resource_config, expected_resource_config):
+    return all(p in resource_config for p in expected_resource_config)

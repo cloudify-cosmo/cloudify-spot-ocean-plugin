@@ -1,10 +1,30 @@
 import decorators
 from cloudify.exceptions import NonRecoverableError
 from ..spot_ocean_sdk import spot_ocean
+from .utils import validate_resource_config
 
 
 @decorators.with_spot_ocean
 def create(client, ctx, resource_config):
+    expected_resource_config = [
+        "SecurityGroupIDs",
+        "KeyPair",
+        "InstanceTypes",
+        "SubnetIDs",
+        "MinCapacity",
+        "MaxCapacity",
+        "TargetCapacity",
+        "OceanClusterName",
+        "ClusterID",
+        "Region"
+    ]
+    if not validate_resource_config(resource_config, expected_resource_config):
+        raise NonRecoverableError(
+            'resource_config is missing parameters.\n '
+            'resource config = {}, expected to include {}'.format(
+                resource_config.keys(), expected_resource_config)
+        )
+
     launch_specification = spot_ocean.get_launch_specification_object(
         security_group_ids=resource_config.get("SecurityGroupIDs"),
         image_id=resource_config.get("ImageID"),
