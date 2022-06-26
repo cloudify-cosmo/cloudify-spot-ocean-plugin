@@ -76,20 +76,20 @@ dsl_definitions:
 node_types:
   cloudify.nodes.SpotOcean.cluster:
     derived_from: cloudify.nodes.Root
-      properties:
-        <<: *client_config
-        resource_config:
-          description: >
-            Data of specific parts of the Cluster needed inorder for
-            spot ocean to monitor the cluster.
-          type: cloudify.datatypes.SpotOcean.Cluster.config
-          required: true
-      interfaces:
-        cloudify.interfaces.lifecycle:
-          create:
-            implementation: SpotOcean.cloudify_spot_ocean.cluster.create
-          delete:
-            implementation: SpotOcean.cloudify_spot_ocean.cluster.delete
+    properties:
+      <<: *client_config
+      resource_config:
+        description: >
+          Data of specific parts of the Cluster needed inorder for
+          spot ocean to monitor the cluster.
+        type: cloudify.datatypes.SpotOcean.Cluster.config
+        required: true
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: SpotOcean.cloudify_spot_ocean.cluster.create
+        delete:
+          implementation: SpotOcean.cloudify_spot_ocean.cluster.delete
 
 relationships:
 
