@@ -732,7 +732,7 @@ node_templates:
               - { get_attribute: [ public_subnet_01, aws_resource_id ] }
               - { get_attribute: [ public_subnet_02, aws_resource_id ] }
     relationships:
-      - target: agent_key
+      - target: eks_cluster
         type: cloudify.relationships.depends_on
 
   terraform:
