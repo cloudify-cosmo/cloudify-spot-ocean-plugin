@@ -90,7 +90,3 @@ node_types:
           implementation: spot-ocean.cloudify_spot_ocean.tasks.create
         delete:
           implementation: spot-ocean.cloudify_spot_ocean.tasks.delete
-
-relationships:
-
-workflows:

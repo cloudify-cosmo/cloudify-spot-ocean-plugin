@@ -5,6 +5,7 @@ imports:
   - plugin:cloudify-aws-plugin?version= >=2.9.0
   - plugin:cloudify-kubernetes-plugin?version= >=2.11.0
   - plugin:cloudify-spot-ocean-plugin
+  - plugin:cloudify-terraform-plugin?version= >=0.15.0
   - plugin:cloudify-utilities-plugin?version= >=1.22.1
 
 inputs:
@@ -719,18 +720,20 @@ node_templates:
   ocean_cluster:
     type: cloudify.nodes.SpotOcean.cluster
     properties:
-      AccountID: { get_input: spot_account }
-      SpotOceanToken: { get_input: spot_token }
-      OceanClusterName: {get_input: spot_ocean_cluster_name}
-      Region: {get_input: aws_region_name}
-      ClusterID: { get_input: eks_cluster_name }
-      SecurityGroupIDs: { get_attribute: [ security_group, aws_resource_id ] }
-      KeyPair: { get_attribute: [ keypair, aws_resource_id ] }
-      SubnetIDs:
-              - { get_attribute: [ private_subnet_01, aws_resource_id ] }
-              - { get_attribute: [ private_subnet_02, aws_resource_id ] }
-              - { get_attribute: [ public_subnet_01, aws_resource_id ] }
-              - { get_attribute: [ public_subnet_02, aws_resource_id ] }
+      client_config:
+        AccountID: { get_input: spot_account }
+        SpotOceanToken: { get_input: spot_token }
+      resource_config:
+        OceanClusterName: {get_input: spot_ocean_cluster_name}
+        Region: {get_input: aws_region_name}
+        ClusterID: { get_input: eks_cluster_name }
+        SecurityGroupIDs: { get_attribute: [ security_group, aws_resource_id ] }
+        KeyPair: { get_attribute: [ keypair, aws_resource_id ] }
+        SubnetIDs:
+                - { get_attribute: [ private_subnet_01, aws_resource_id ] }
+                - { get_attribute: [ private_subnet_02, aws_resource_id ] }
+                - { get_attribute: [ public_subnet_01, aws_resource_id ] }
+                - { get_attribute: [ public_subnet_02, aws_resource_id ] }
     relationships:
       - target: eks_cluster
         type: cloudify.relationships.depends_on
