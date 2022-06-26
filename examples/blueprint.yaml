@@ -59,9 +59,11 @@ inputs:
 
   spot_token:
     type: string
+    default: { get_secret: spot_token }
 
   spot_account:
     type: string
+    default: { get_secret: spot_account }
 
   spot_ocean_cluster_name:
     type: string
