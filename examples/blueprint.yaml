@@ -745,6 +745,8 @@ node_templates:
         type: cloudify.relationships.depends_on
       - target: store_token_and_kubeconfig
         type: cloudify.relationships.depends_on
+      - target: sanity_pod
+        type: cloudify.relationships.depends_on
 
   terraform:
     type: cloudify.nodes.terraform
