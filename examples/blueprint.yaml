@@ -9,12 +9,6 @@ imports:
 
 inputs:
 
-  location:
-    type: string
-  
-  source_path:
-    type: string
-
   aws_access_key_id:
     type: string
     default: { get_secret: aws_access_key_id }
@@ -71,6 +65,14 @@ inputs:
   spot_ocean_cluster_name:
     type: string
     default: { get_input: eks_cluster_name }
+
+  location:
+    type: string
+    default: https://github.com/cloudify-cosmo/cloudify-spot-ocean-plugin/archive/refs/heads/main.zip
+
+  source_path:
+    type: string
+    default: examples/teraform
 
 
 dsl_definitions:

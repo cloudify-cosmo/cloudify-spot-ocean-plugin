@@ -47,11 +47,13 @@ def validate_resource_config(resource_config, expected_resource_config):
 
 def get_image(cluster_id):
     ec2 = client('ec2')
-
+    cluster_version = get_cluster_version(cluster_id)
     images = ec2.describe_images(
         Filters=[
             {'Name': 'owner-id', 'Values': ['602401143452']},
-            {'Name': 'name', 'Values': ['amazon-eks-node-1.22*']}
+            {'Name': 'name', 'Values': ['amazon-eks-node-' +
+                                        cluster_version +
+                                        '*']}
         ]
     )
 
