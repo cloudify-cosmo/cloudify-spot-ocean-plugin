@@ -41,7 +41,7 @@ data_types:
         required: true
       ImageID:
         type: string
-        default: { get_attribute: [ ami, aws_resource_id ] }
+        required: false
         # default: "ami-0319c884da18af515"
       KeyPair:
         type: string

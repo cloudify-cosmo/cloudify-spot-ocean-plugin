@@ -721,8 +721,8 @@ node_templates:
     type: cloudify.nodes.SpotOcean.cluster
     properties:
       client_config:
-        AccountID: { get_input: spot_account }
-        SpotOceanToken: { get_input: spot_token }
+        account_id: { get_input: spot_account }
+        spot_ocean_token: { get_input: spot_token }
       resource_config:
         OceanClusterName: {get_input: spot_ocean_cluster_name}
         Region: {get_input: aws_region_name}
