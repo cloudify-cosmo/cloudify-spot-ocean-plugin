@@ -1,7 +1,7 @@
-import decorators
-from cloudify.exceptions import NonRecoverableError
+from . import decorators
 from ..spot_ocean_sdk import spot_ocean
 from .utils import validate_resource_config
+from cloudify.exceptions import NonRecoverableError
 
 
 @decorators.with_spot_ocean

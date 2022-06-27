@@ -1,6 +1,5 @@
 from functools import wraps
-
-import utils
+from . import utils
 
 
 def with_spot_ocean(func):
