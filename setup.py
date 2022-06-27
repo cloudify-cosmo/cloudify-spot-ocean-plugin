@@ -47,6 +47,7 @@ setup(
         'cloudify-utilities-plugins-sdk>=0.0.61',
         'pycryptodome==3.9.7',
         'deepdiff==3.3.0',
-        'spotinst_sdk2'
+        'spotinst_sdk2',
+        'boto3'
     ]
 )
