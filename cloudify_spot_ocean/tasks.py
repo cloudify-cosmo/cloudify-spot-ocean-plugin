@@ -1,8 +1,6 @@
 from . import decorators
 from .utils import validate_resource_config
-from ..spot_ocean_sdk.spot_ocean import get_launch_specification_object, \
-    get_instance_types_object, get_compute_object, get_strategy_object, \
-    get_capacity_object, get_ocean_object
+from spot_ocean_sdk import spot_ocean
 from cloudify.exceptions import NonRecoverableError
 
 
@@ -27,26 +25,26 @@ def create(client, ctx, resource_config):
                 resource_config.keys(), expected_resource_config)
         )
 
-    launch_specification = get_launch_specification_object(
+    launch_specification = spot_ocean.get_launch_specification_object(
         security_group_ids=resource_config.get("SecurityGroupIDs"),
         image_id=resource_config.get("ImageID"),
         key_pair=resource_config.get("KeyPair"))
 
-    instance_types = get_instance_types_object(
+    instance_types = spot_ocean.get_instance_types_object(
         instance_types=resource_config.get("InstanceTypes"))
 
-    compute = get_compute_object(
+    compute = spot_ocean.get_compute_object(
         instance_types=instance_types,
         launch_specification=launch_specification,
         subnet_ids=resource_config.get("SubnetIDs"))
 
-    strategy = get_strategy_object()
-    capacity = get_capacity_object(
+    strategy = spot_ocean.get_strategy_object()
+    capacity = spot_ocean.get_capacity_object(
         minimum=resource_config.get("MinCapacity"),
         maximum=resource_config.get("MaxCapacity"),
         target=resource_config.get("TargetCapacity"))
 
-    ocean = get_ocean_object(
+    ocean = spot_ocean.get_ocean_object(
         name=resource_config.get("OceanClusterName"),
         cluster_id=resource_config.get("ClusterID"),
         region=resource_config.get("Region"),
