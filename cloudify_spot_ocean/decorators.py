@@ -13,7 +13,7 @@ def with_spot_ocean(func):
         client = utils.get_client(client_config)
         return func(*args,
                     **kwargs,
-                    ctx=ctx,
                     client=client,
+                    ctx=ctx,
                     resource_config=resource_config)
     return f
