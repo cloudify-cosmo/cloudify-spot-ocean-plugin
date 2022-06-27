@@ -32,13 +32,14 @@ def get_client_config(target=False):
     return client_config
 
 
-def get_client():
-    client_config = get_client_config()
+def get_client(client_config=None):
+    if not client_config:
+        client_config = get_client_config()
     session = SpotinstSession(auth_token=client_config.get("SpotOceanToken"),
                               account_id=client_config.get("AccountID"))
-    client = session.client("ocean_aws")
+    ocean_client = session.client("ocean_aws")
 
-    return client
+    return ocean_client
 
 
 def validate_resource_config(resource_config, expected_resource_config):

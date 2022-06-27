@@ -10,7 +10,8 @@ def with_spot_ocean(func):
         resource_config = utils.get_resource_config()
         kwargs['client_config'] = client_config
         kwargs['resource_config'] = resource_config
-        client = utils.get_client()
+        ctx.logger.info('errk = {}'.format(client_config))
+        client = utils.get_client(client_config)
         return func(*args,
                     **kwargs,
                     ctx=ctx,
