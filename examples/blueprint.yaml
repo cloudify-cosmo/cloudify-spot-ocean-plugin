@@ -729,7 +729,8 @@ node_templates:
         OceanClusterName: {get_input: spot_ocean_cluster_name}
         Region: {get_input: aws_region_name}
         ClusterID: { get_input: eks_cluster_name }
-        SecurityGroupIDs: { get_attribute: [ security_group, aws_resource_id ] }
+        SecurityGroupIDs:
+                - { get_attribute: [ security_group, aws_resource_id ] }
         KeyPair: { get_attribute: [ keypair, aws_resource_id ] }
         SubnetIDs:
                 - { get_attribute: [ private_subnet_01, aws_resource_id ] }
