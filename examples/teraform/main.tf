@@ -1,5 +1,7 @@
 provider "kubernetes" {
-  config_path = "~/.kube/config"
+  host                   =  var.endpoint
+  token                  =  var.token
+  cluster_ca_certificate = base64decode(var.ca_cert)
 }
 
 module "ocean-controller" {

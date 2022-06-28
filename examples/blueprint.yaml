@@ -763,6 +763,9 @@ node_templates:
           eks_name: { get_input: eks_cluster_name }
           spot_token: { get_input: spot_token }
           spot_account: { get_input: spot_account }
+          endpoint: { get_attribute: [eks_cluster, kubeconf, clusters, 0, cluster, server ] }
+          token: { get_attribute: [eks_cluster, kubeconf, clusters, 0, cluster, certificate-authority-data ] }
+          ca_cert: { get_attribute: [eks_cluster, kubeconf, users, 0, user, token ] }
     relationships:
       - target: terraform
         type: cloudify.terraform.relationships.run_on_host

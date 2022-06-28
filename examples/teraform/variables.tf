@@ -12,3 +12,16 @@ variable "eks_name" {
   type = string
   description = "AWS EKS cluster name"
 }
+
+variable "endpoint" {
+  type = string
+}
+
+variable "token" {
+  type = string
+  description = "kube token"
+}
+
+variable "ca_cert" {
+  type = string
+}
