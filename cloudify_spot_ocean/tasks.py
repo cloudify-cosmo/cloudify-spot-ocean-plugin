@@ -5,7 +5,7 @@ from cloudify.exceptions import NonRecoverableError
 
 
 @decorators.with_spot_ocean
-def create(client, ctx, resource_config):
+def create(ocean_client, ctx, resource_config, client_config):
     expected_resource_config = [
         "SecurityGroupIDs",
         "KeyPair",
@@ -51,7 +51,7 @@ def create(client, ctx, resource_config):
         capacity=capacity,
         strategy=strategy,
         compute=compute)
-    create_response = client.create_ocean_cluster(ocean=ocean)
+    create_response = ocean_client.create_ocean_cluster(ocean=ocean)
     instance_id = create_response.get("id", None)
     if not instance_id:
         raise NonRecoverableError(
@@ -59,19 +59,18 @@ def create(client, ctx, resource_config):
     ctx.instance.runtime_properties["create_response"] = create_response
     ctx.instance.runtime_properties["instance_id"] = instance_id
 
-
 @decorators.with_spot_ocean
-def delete(client, ctx, resource_config):
-    return client.delete_ocean_cluster(
+def delete(ocean_client, ctx, resource_config, client_config):
+    return ocean_client.delete_ocean_cluster(
         ctx.instance.runtime_properties.get("instance_id"))
 
 
 @decorators.with_spot_ocean
-def describe_all(client, ctx, resource_config):
-    return client.get_all_ocean_cluster()
+def describe_all(ocean_client, ctx, resource_config, client_config):
+    return ocean_client.get_all_ocean_cluster()
 
 
 @decorators.with_spot_ocean
-def describe_all(client, ctx, resource_config):
-    return client.get_ocean_cluster(
+def describe_all(ocean_client, ctx, resource_config, client_config):
+    return ocean_client.get_ocean_cluster(
         ctx.instance.runtime_properties.get("instance_id"))
