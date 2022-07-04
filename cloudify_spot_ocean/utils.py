@@ -14,7 +14,6 @@ def get_resource_config(target=False):
     """Get the cloudify.nodes.terraform.Module resource_config"""
     instance = get_ctx_instance(target=target)
     resource_config = instance.runtime_properties.get('resource_config')
-    ### TODO check if second condtion is needed
     if not resource_config or ctx.workflow_id == 'install':
         node = get_ctx_node(target=target)
         resource_config = node.properties.get('resource_config', {})
@@ -25,7 +24,6 @@ def get_client_config(target=False):
     """Get the cloudify.nodes.terraform.Module resource_config"""
     instance = get_ctx_instance(target=target)
     client_config = instance.runtime_properties.get('client_config')
-    ### TODO check if second condtion is needed
     if not client_config or ctx.workflow_id == 'install':
         node = get_ctx_node(target=target)
         client_config = node.properties.get('client_config', {})
@@ -68,7 +66,7 @@ def get_image(cluster_id):
 def get_cluster_version(cluster_id):
     eks = client('eks')
     cluster = eks.describe_cluster(cluster_id)
-    if 'cluster' not in cluster or not 'version' in cluster['cluster']:
+    if 'cluster' not in cluster or 'version' not in cluster['cluster']:
         raise NonRecoverableError(
             'Unable to determine version of EKS cluster {}, '
             'and no ImageId was provided.'.format(cluster_id))

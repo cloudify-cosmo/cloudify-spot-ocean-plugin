@@ -39,11 +39,9 @@ def test_get_instance_types_object(spot_ocean_aws, *_, **__):
     # spot_ocean_aws.InstanceTypes = Mock()
     spot_ocean_aws.InstanceTypes = aws.InstanceTypes(whitelist=[
         RESOURCE_CONFIG.get('InstanceTypes')])
-    print(spot_ocean_aws.InstanceTypes)
     # spot_ocean_aws.InstanceTypes.client = Mock()
     instance_types = spot_ocean.get_instance_types_object(RESOURCE_CONFIG.get(
         'InstanceTypes'))
-    print(instance_types)
     assert instance_types.whitelist == spot_ocean_aws.InstanceTypes.whitelist
     assert instance_types.blacklist == spot_ocean_aws.InstanceTypes.blacklist
 

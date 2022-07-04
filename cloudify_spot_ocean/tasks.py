@@ -59,6 +59,7 @@ def create(ocean_client, ctx, resource_config, client_config):
     ctx.instance.runtime_properties["create_response"] = create_response
     ctx.instance.runtime_properties["instance_id"] = instance_id
 
+
 @decorators.with_spot_ocean
 def delete(ocean_client, ctx, resource_config, client_config):
     return ocean_client.delete_ocean_cluster(
@@ -71,6 +72,6 @@ def describe_all(ocean_client, ctx, resource_config, client_config):
 
 
 @decorators.with_spot_ocean
-def describe_all(ocean_client, ctx, resource_config, client_config):
+def describe(ocean_client, ctx, resource_config, client_config):
     return ocean_client.get_ocean_cluster(
         ctx.instance.runtime_properties.get("instance_id"))
