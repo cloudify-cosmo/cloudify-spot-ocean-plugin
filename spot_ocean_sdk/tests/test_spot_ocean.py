@@ -29,7 +29,9 @@ def test_get_capacity_object(spot_ocean_aws, *_, **__):
     capacity = spot_ocean.get_capacity_object(minimum=min,
                                               maximum=max,
                                               target=target)
-    assert capacity == spot_ocean_aws.Capacity
+    assert capacity.minimum == spot_ocean_aws.Capacity.minimum
+    assert capacity.maximum == spot_ocean_aws.Capacity.maximum
+    assert capacity.target == spot_ocean_aws.Capacity.target
 
 
 @patch('spot_ocean_sdk.spot_ocean.aws')
@@ -37,21 +39,28 @@ def test_get_instance_types_object(spot_ocean_aws, *_, **__):
     # spot_ocean_aws.InstanceTypes = Mock()
     spot_ocean_aws.InstanceTypes = aws.InstanceTypes(whitelist=[
         RESOURCE_CONFIG.get('InstanceTypes')])
+    print(spot_ocean_aws.InstanceTypes)
     # spot_ocean_aws.InstanceTypes.client = Mock()
     instance_types = spot_ocean.get_instance_types_object(RESOURCE_CONFIG.get(
         'InstanceTypes'))
-    assert isinstance(instance_types, str)
-    assert instance_types == spot_ocean_aws.InstanceTypes
+    print(instance_types)
+    assert instance_types.whitelist == spot_ocean_aws.InstanceTypes.whitelist
+    assert instance_types.blacklist == spot_ocean_aws.InstanceTypes.blacklist
 
 
 @patch('spot_ocean_sdk.spot_ocean.aws')
 def test_get_strategy_object(spot_ocean_aws, *_, **__):
-    spot_ocean_aws.Capacity = aws.Strategy(
+    spot_ocean_aws.Strategy = aws.Strategy(
         utilize_reserved_instances=False,
         fallback_to_od=True,
         spot_percentage=100)
+    print(spot_ocean_aws.Strategy)
 
-    capacity = spot_ocean.get_strategy_object()
-    assert capacity == spot_ocean_aws.Capacity
+    strategy = spot_ocean.get_strategy_object()
+    print(strategy)
+    assert strategy.utilize_reserved_instances == \
+           spot_ocean_aws.Strategy.utilize_reserved_instances
+    assert strategy.fallback_to_od == spot_ocean_aws.Strategy.fallback_to_od
+    assert strategy.spot_percentage == spot_ocean_aws.Strategy.spot_percentage
 
 
