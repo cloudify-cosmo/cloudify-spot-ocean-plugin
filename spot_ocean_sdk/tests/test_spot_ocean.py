@@ -2,6 +2,8 @@ from spot_ocean_sdk import spot_ocean
 from mock import Mock, patch
 from spotinst_sdk2.models.ocean import aws
 
+from cloudify.exceptions import NonRecoverableError
+
 RESOURCE_CONFIG = {
     'InstanceTypes': 't3.medium',
     'OceanClusterName': 'eks-name',
@@ -37,6 +39,18 @@ def test_get_capacity_object(spot_ocean_aws, *_, **__):
     assert capacity.minimum == RESOURCE_CONFIG.get('MinCapacity')
     assert capacity.maximum == RESOURCE_CONFIG.get('MaxCapacity')
     assert capacity.target == RESOURCE_CONFIG.get('TargetCapacity')
+    try:
+        spot_ocean.get_capacity_object(33, 33, "t")
+    except NonRecoverableError:
+        pass
+    try:
+        spot_ocean.get_capacity_object(33, "t", 33)
+    except NonRecoverableError:
+        pass
+    try:
+        spot_ocean.get_capacity_object("t", 33, 33)
+    except NonRecoverableError:
+        pass
 
 
 @patch('spot_ocean_sdk.spot_ocean.aws')
@@ -49,6 +63,10 @@ def test_get_instance_types_object(spot_ocean_aws, *_, **__):
     instance_types = spot_ocean.get_instance_types_object(RESOURCE_CONFIG.get(
         'InstanceTypes'))
     assert instance_types.whitelist == [RESOURCE_CONFIG.get('InstanceTypes')]
+    try:
+        spot_ocean.get_instance_types_object(33)
+    except NonRecoverableError:
+        pass
 
 
 @patch('spot_ocean_sdk.spot_ocean.aws')
@@ -89,6 +107,18 @@ def test_get_launch_specification_object(spot_ocean_aws, *_, **__):
            RESOURCE_CONFIG.get('SecurityGroupIDs')
     assert launch_specification.image_id == RESOURCE_CONFIG.get('ImageID')
     assert launch_specification.key_pair == RESOURCE_CONFIG.get('KeyPair')
+    try:
+        spot_ocean.get_launch_specification_object(33, "foo", "bar")
+    except NonRecoverableError:
+        pass
+    try:
+        spot_ocean.get_launch_specification_object([], 33, "bar")
+    except NonRecoverableError:
+        pass
+    try:
+        spot_ocean.get_launch_specification_object([], "foo", 33)
+    except NonRecoverableError:
+        pass
 
 
 @patch('spot_ocean_sdk.spot_ocean.aws')
@@ -105,6 +135,10 @@ def test_get_compute_object(spot_ocean_aws, *_, **__):
         subnet_ids=RESOURCE_CONFIG.get('SubnetIDs'),
         launch_specification=spot_ocean_aws.LaunchSpecifications)
     assert compute.subnet_ids == RESOURCE_CONFIG.get('SubnetIDs')
+    try:
+        spot_ocean.get_compute_object("foo", [], "bar")
+    except NonRecoverableError:
+        pass
 
 
 @patch('spot_ocean_sdk.spot_ocean.aws')
@@ -135,3 +169,33 @@ def test_get_ocean_object(spot_ocean_aws, *_, **__):
     assert ocean.name == RESOURCE_CONFIG.get('OceanClusterName')
     assert ocean.controller_cluster_id == RESOURCE_CONFIG.get('ClusterID')
     assert ocean.region == RESOURCE_CONFIG.get('Region')
+    try:
+        spot_ocean.get_ocean_object(
+            name=1,
+            cluster_id=RESOURCE_CONFIG.get('ClusterID'),
+            region=RESOURCE_CONFIG.get('Region'),
+            capacity=spot_ocean_aws.Capacity,
+            strategy=spot_ocean_aws.Strategy,
+            compute=spot_ocean_aws.Compute)
+    except NonRecoverableError:
+        pass
+    try:
+        spot_ocean.get_ocean_object(
+            name=RESOURCE_CONFIG.get('OceanClusterName'),
+            cluster_id=2,
+            region=RESOURCE_CONFIG.get('Region'),
+            capacity=spot_ocean_aws.Capacity,
+            strategy=spot_ocean_aws.Strategy,
+            compute=spot_ocean_aws.Compute)
+    except NonRecoverableError:
+        pass
+    try:
+        spot_ocean.get_ocean_object(
+            name=RESOURCE_CONFIG.get('OceanClusterName'),
+            cluster_id=RESOURCE_CONFIG.get('ClusterID'),
+            region=3,
+            capacity=spot_ocean_aws.Capacity,
+            strategy=spot_ocean_aws.Strategy,
+            compute=spot_ocean_aws.Compute)
+    except NonRecoverableError:
+        pass
