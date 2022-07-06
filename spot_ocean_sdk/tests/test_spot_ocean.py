@@ -1,6 +1,5 @@
 from spot_ocean_sdk import spot_ocean
-from mock import Mock, patch
-from spotinst_sdk2.models.ocean import aws
+from mock import patch
 
 from cloudify.exceptions import NonRecoverableError
 
