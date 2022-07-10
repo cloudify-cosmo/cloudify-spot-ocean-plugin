@@ -1,4 +1,7 @@
+import sys
+
 from boto3 import client
+from spotinst_sdk2.client import SpotinstClientException
 
 from cloudify import ctx
 from cloudify_common_sdk.utils import (
@@ -8,6 +11,13 @@ from cloudify_common_sdk.utils import (
 from cloudify.exceptions import NonRecoverableError
 
 from spotinst_sdk2 import SpotinstSession
+
+from cloudify.utils import exception_to_error_cause
+
+EXPECTED_CLIENT_CONFIG = [
+        "spot_ocean_token",
+        "account_id"
+    ]
 
 
 def get_resource_config(target=False):
@@ -31,17 +41,31 @@ def get_client_config(target=False):
 
 
 def get_client(client_config=None):
-    if not client_config:
-        client_config = get_client_config()
+    client_config = client_config or get_client_config()
+    validate_resource(resource=client_config,
+                      expected_resources=EXPECTED_CLIENT_CONFIG,
+                      operation='client_config')
+
     session = SpotinstSession(auth_token=client_config.get("spot_ocean_token"),
                               account_id=client_config.get("account_id"))
-    ocean_client = session.client("ocean_aws")
+    spot_client = session.client("ocean_aws")
+    try:
+        spot_client.get_all_ocean_cluster()
+    except SpotinstClientException as ex:
+        _, _, tb = sys.exc_info()
+        print(str(exception_to_error_cause(ex, tb)))
+        if hasattr(ex, 'message'):
+            print('The message: {}'.format(ex.message))
+        raise NonRecoverableError("Spot Ocean client creation failed",
+                                  causes=[exception_to_error_cause(ex, tb)])
+    return spot_client
 
-    return ocean_client
 
-
-def validate_resource_config(resource_config, expected_resource_config):
-    return all(p in resource_config for p in expected_resource_config)
+def validate_resource(resource, expected_resources, operation):
+    if not all(p in resource for p in expected_resources):
+        raise NonRecoverableError(
+            '{} is missing parameters.\n{} = {}, expected to include {}'.format
+            (operation, operation, resource.keys(), expected_resources))
 
 
 def get_image(cluster_id):
@@ -55,7 +79,9 @@ def get_image(cluster_id):
                                         '*']}
         ]
     )
-
+    if not images['Images']:
+        raise NonRecoverableError('No Image AMI was provided and no image was '
+                                  'found. Please provide an Image AMI')
     oldest_to_newest = sorted(images['Images'],
                               key=lambda x: x['CreationDate'])
 
