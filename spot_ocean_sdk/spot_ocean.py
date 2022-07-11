@@ -6,9 +6,9 @@ from cloudify.exceptions import NonRecoverableError
 def get_launch_specification_object(security_group_ids, image_id, key_pair):
     if not isinstance(security_group_ids, list):
         raise NonRecoverableError(
-            'Security group IDs is expected to be a list')
+            'Security group Ids is expected to be a list')
     if not isinstance(image_id, str):
-        raise NonRecoverableError('Image ID is expected to be a string')
+        raise NonRecoverableError('Image Id is expected to be a string')
     if not isinstance(key_pair, str):
         raise NonRecoverableError('Key Pair is expected to be a string')
     launch_specification = aws.LaunchSpecifications(
@@ -29,7 +29,7 @@ def get_instance_types_object(instance_types):
 
 def get_compute_object(instance_types, subnet_ids, launch_specification):
     if not isinstance(subnet_ids, list):
-        raise NonRecoverableError('Subnet IDs is expected to be a list')
+        raise NonRecoverableError('Subnet Ids is expected to be a list')
     compute = aws.Compute(instance_types=instance_types,
                           subnet_ids=subnet_ids,
                           launch_specification=launch_specification)
@@ -62,7 +62,7 @@ def get_ocean_object(name, cluster_id, region, capacity, strategy, compute):
     if not isinstance(name, str):
         raise NonRecoverableError('Name is expected to be a string')
     if not isinstance(cluster_id, str):
-        raise NonRecoverableError('Cluster ID is expected to be a string')
+        raise NonRecoverableError('Cluster Id is expected to be a string')
     if not isinstance(region, str):
         raise NonRecoverableError('Region is expected to be a string')
 
