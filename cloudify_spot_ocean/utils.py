@@ -61,11 +61,12 @@ def get_client(client_config=None):
     return spot_client
 
 
-def validate_resource(resource, expected_resources, operation):
+def validate_resource(resource, expected_resources, operation=''):
     if not all(p in resource for p in expected_resources):
         raise NonRecoverableError(
             '{} is missing parameters.\n{} = {}, expected to include {}'.format
             (operation, operation, resource.keys(), expected_resources))
+    return True
 
 
 def get_image(cluster_id):

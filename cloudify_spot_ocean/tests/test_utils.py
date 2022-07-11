@@ -1,3 +1,5 @@
+from cloudify.exceptions import NonRecoverableError
+import unittest
 from . import mock_context
 from .. import utils
 
@@ -29,11 +31,13 @@ def test_get_client_config():
                              'account_id': 'act-1'}
 
 
-def test_validate_resource_config():
-    a = {'foo': "bar", 'gpp': 'nar', 'buz': 'zun'}
-    b = {'foo': "bar", 'gpp': 'nar', 'buz': 'zun'}
-    c = {'foo': "bar", 'buz': 'zun'}
+class MyTestCase(unittest.TestCase):
+    def test_validate_resource_config(self):
+        a = {'foo': "bar", 'gpp': 'nar', 'buz': 'zun'}
+        b = {'foo': "bar", 'gpp': 'nar', 'buz': 'zun'}
+        c = {'foo': "bar", 'buz': 'zun'}
 
-    assert utils.validate_resource_config(a, b)
-    assert utils.validate_resource_config(b, c)
-    assert not utils.validate_resource_config(c, b)
+        assert utils.validate_resource(a, b, 'test')
+        assert utils.validate_resource(b, c, 'test')
+        with self.assertRaises(NonRecoverableError):
+            utils.validate_resource(c, b, 'test')
