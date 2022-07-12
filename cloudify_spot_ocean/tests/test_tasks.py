@@ -1,5 +1,5 @@
 import unittest
-from mock import patch, MagicMock, PropertyMock
+from mock import patch
 from . import mock_context
 from .. import tasks
 
@@ -79,9 +79,22 @@ class TestTasks(unittest.TestCase):
         with patch('cloudify_spot_ocean.utils.get_client') as ocean_client:
             ocean_client().create_ocean_cluster.return_value = None
             ocean_client().get_ocean_cluster.side_effect = [True, None]
-
             assert not tasks.delete(ctx=ctx, ocean_client=ocean_client)
 
-#   def test_describe(self, *_, **__):
+    def test_describe(self, *_, **__):
+        ctx = mock_context(test_name="test_decorator_stores_kwargs",
+                           test_node_id="test_decorator_stores_kwargs",
+                           test_properties={},
+                           test_runtime_properties={
+                               'instance_id': 'o-35d60931'})
+        with patch('cloudify_spot_ocean.utils.get_client') as ocean_client:
+            ocean_client.get_ocean_cluster.return_value = CREATE_RESPONSE
+            response = tasks.describe(ocean_client=ocean_client, ctx=ctx)
+            assert response == CREATE_RESPONSE
 
-#  def test_describe_all(self, *_, **__):
+    def test_describe_all(self, *_, **__):
+        with patch('cloudify_spot_ocean.utils.get_client') as ocean_client:
+            ocean_client.get_all_ocean_cluster.return_value = \
+                DESCRIBE_RESPONSE
+            response = tasks.describe_all(ocean_client=ocean_client)
+            assert response == DESCRIBE_RESPONSE
