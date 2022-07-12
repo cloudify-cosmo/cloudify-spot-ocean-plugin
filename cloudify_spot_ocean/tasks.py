@@ -59,11 +59,15 @@ def create(ocean_client, ctx, resource_config, **_):
             'EKS cluster not added successfully to spot ocean')
     clusters = describe_all(ocean_client)
     for i in clusters:
-        if clusters[i]['name'] == resource_config.get("OceanClusterName") and\
-                clusters[i]['cluster_id'] == resource_config.get("ClusterId"):
+        if i['name'] == resource_config.get("OceanClusterName") and\
+                i['controller_cluster_id'] == resource_config.get("ClusterId"):
             ctx.instance.runtime_properties["create_response"] = \
                 create_response
             ctx.instance.runtime_properties["instance_id"] = instance_id
+            return create_response
+    raise NonRecoverableError(
+        'EKS cluster not added successfully to spot ocean. create response = '
+        '{}'.format(create_response))
 
 
 @decorators.with_spot_ocean
