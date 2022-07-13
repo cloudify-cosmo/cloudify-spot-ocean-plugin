@@ -725,6 +725,10 @@ node_templates:
       client_config:
         account_id: { get_input: spot_account }
         spot_ocean_token: { get_input: spot_token }
+      aws_config:
+        aws_access_key_id: { get_input: aws_access_key_id }
+        aws_secret_access_key: { get_input: aws_secret_access_key }
+        region_name: { get_input: aws_region_name }
       resource_config:
         OceanClusterName: {get_input: spot_ocean_cluster_name}
         Region: {get_input: aws_region_name}
