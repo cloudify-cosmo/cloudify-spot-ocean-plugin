@@ -728,11 +728,11 @@ node_templates:
       resource_config:
         OceanClusterName: {get_input: spot_ocean_cluster_name}
         Region: {get_input: aws_region_name}
-        ClusterID: { get_input: eks_cluster_name }
-        SecurityGroupIDs:
+        ClusterId: { get_input: eks_cluster_name }
+        SecurityGroupIds:
                 - { get_attribute: [ security_group, aws_resource_id ] }
         KeyPair: { get_attribute: [ keypair, aws_resource_id ] }
-        SubnetIDs:
+        SubnetIds:
                 - { get_attribute: [ private_subnet_01, aws_resource_id ] }
                 - { get_attribute: [ private_subnet_02, aws_resource_id ] }
                 - { get_attribute: [ public_subnet_01, aws_resource_id ] }

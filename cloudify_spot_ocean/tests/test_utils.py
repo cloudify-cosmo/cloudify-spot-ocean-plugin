@@ -1,7 +1,9 @@
-from cloudify.exceptions import NonRecoverableError
 import unittest
-from . import mock_context
+
+from cloudify.exceptions import NonRecoverableError
+
 from .. import utils
+from . import mock_context
 
 
 def test_get_resource_config():

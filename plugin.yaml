@@ -86,37 +86,6 @@ data_types:
           US East, which is a Region.)
         type: string
         required: false
-      endpoint_url:
-        description: >
-            The complete URL to use for the constructed
-            client. Normally, botocore will automatically construct the
-            appropriate URL to use when communicating with a service.  You
-            can specify a complete URL (including the "http/https" scheme)
-            to override this behavior.  If this value is provided,
-            then ``use_ssl`` is ignored.
-        type: string
-        required: false
-      api_version:
-        type: string
-        required: false
-        description: The API Version to use, if not latest.
-      assume_role:
-        type: string
-        required: false
-        description: The role ARN that Cloudify manager instance is able to assume.
-      additional_config:
-        required: false
-        description: >
-          An abstraction of the 'config' parameter accepted by boto3.client function.
-          This parameter should only be used by experienced users. Example usage:
-          vm:
-            type: cloudify.nodes.aws.ec2.Instances
-            properties:
-              client_config:
-                additional_config:
-                  retries:
-                    max_attempts: 10
-                    mode: adaptive
 dsl_definitions:
 
   # Every resource uses this property unless noted.

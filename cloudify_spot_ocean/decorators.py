@@ -1,10 +1,10 @@
 import sys
+
 from functools import wraps
-
-from spotinst_sdk2.client import SpotinstClientException
-
 from cloudify.utils import exception_to_error_cause
 from cloudify.exceptions import NonRecoverableError
+from spotinst_sdk2.client import SpotinstClientException
+
 from . import utils
 
 

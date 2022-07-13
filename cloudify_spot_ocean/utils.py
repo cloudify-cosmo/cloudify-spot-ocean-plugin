@@ -1,18 +1,14 @@
 import sys
 
+import boto3
 from boto3 import client
-from spotinst_sdk2.client import SpotinstClientException
-
 from cloudify import ctx
-from cloudify_common_sdk.utils import (
-    get_ctx_node,
-    get_ctx_instance,
-)
-from cloudify.exceptions import NonRecoverableError
-
 from spotinst_sdk2 import SpotinstSession
-
+from cloudify.exceptions import NonRecoverableError
 from cloudify.utils import exception_to_error_cause
+from spotinst_sdk2.client import SpotinstClientException
+from cloudify_common_sdk.utils import get_ctx_node, get_ctx_instance
+# from loudify_common_sdk.secure_property_management import get_stored_property
 
 EXPECTED_CLIENT_CONFIG = [
         "spot_ocean_token",
@@ -20,6 +16,10 @@ EXPECTED_CLIENT_CONFIG = [
     ]
 
 
+# TODO switch to new generic get_resource_config
+# def get_resource_config(target=False):
+#     """Get the cloudify.nodes.terraform.Module resource_config"""
+#     return get_stored_property(ctx, 'resource_config', target)
 def get_resource_config(target=False):
     """Get the cloudify.nodes.terraform.Module resource_config"""
     instance = get_ctx_instance(target=target)
@@ -30,13 +30,10 @@ def get_resource_config(target=False):
     return resource_config
 
 
-def get_client_config(target=False):
+def get_client_config(target=False, property_name='client_config'):
     """Get the cloudify.nodes.terraform.Module resource_config"""
-    instance = get_ctx_instance(target=target)
-    client_config = instance.runtime_properties.get('client_config')
-    if not client_config or ctx.workflow_id == 'install':
-        node = get_ctx_node(target=target)
-        client_config = node.properties.get('client_config', {})
+    node = get_ctx_node(target=target)
+    client_config = node.properties.get(property_name, {})
     return client_config
 
 
@@ -69,8 +66,20 @@ def validate_resource(resource, expected_resources, operation=''):
     return True
 
 
+def get_aws_client(aws_resource):
+    aws_cred = get_client_config(property_name='aws_config')
+    client = boto3.client(
+        aws_resource,
+        aws_access_key_id=aws_cred.get('aws_access_key_id'),
+        aws_secret_access_key=aws_cred.get('aws_secret_access_key'),
+        aws_session_token=aws_cred.get('aws_session_token')
+    )
+    return client
+
+
 def get_image(cluster_id):
-    ec2 = client('ec2')
+    # ec2 = client('ec2')
+    ec2 = get_aws_client("ec2")
     cluster_version = get_cluster_version(cluster_id)
     images = ec2.describe_images(
         Filters=[
@@ -80,10 +89,10 @@ def get_image(cluster_id):
                                         '*']}
         ]
     )
-    if not images['Images']:
+    if not images.get('Images'):
         raise NonRecoverableError('No Image AMI was provided and no image was '
                                   'found. Please provide an Image AMI')
-    oldest_to_newest = sorted(images['Images'],
+    oldest_to_newest = sorted(images.get('Images'),
                               key=lambda x: x['CreationDate'])
 
     most_recent_image_id = oldest_to_newest[-1]['ImageId']
@@ -91,7 +100,8 @@ def get_image(cluster_id):
 
 
 def get_cluster_version(cluster_id):
-    eks = client('eks')
+    # eks = client('eks')
+    eks = get_aws_client('eks')
     cluster = eks.describe_cluster(cluster_id)
     if 'cluster' not in cluster or 'version' not in cluster['cluster']:
         raise NonRecoverableError(

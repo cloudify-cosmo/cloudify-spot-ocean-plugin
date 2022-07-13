@@ -1,6 +1,5 @@
-from spot_ocean_sdk import spot_ocean
 from mock import patch
-
+from spot_ocean_sdk import spot_ocean
 from cloudify.exceptions import NonRecoverableError
 
 RESOURCE_CONFIG = {

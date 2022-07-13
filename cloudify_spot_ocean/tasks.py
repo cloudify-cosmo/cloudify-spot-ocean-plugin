@@ -1,10 +1,9 @@
+from spot_ocean_sdk import spot_ocean
+from cloudify.exceptions import NonRecoverableError
 from spotinst_sdk2.client import SpotinstClientException
 
 from . import decorators
 from .utils import validate_resource
-from spot_ocean_sdk import spot_ocean
-from cloudify.exceptions import NonRecoverableError
-
 
 EXPECTED_RESOURCE_CONFIG = [
         "SecurityGroupIds",

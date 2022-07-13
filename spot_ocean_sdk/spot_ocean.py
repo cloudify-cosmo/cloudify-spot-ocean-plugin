@@ -1,7 +1,5 @@
 from spotinst_sdk2.models.ocean import aws
-
 from cloudify.exceptions import NonRecoverableError
-
 
 def get_launch_specification_object(security_group_ids, image_id, key_pair):
     if not isinstance(security_group_ids, list):

@@ -1,7 +1,9 @@
 import unittest
+
 from mock import patch
-from . import mock_context
+
 from .. import tasks
+from . import mock_context
 
 CREATE_RESPONSE = {'id': 'o-35d60931',
                    'name': 'yk1',
