@@ -1,7 +1,6 @@
 import sys
-
 import boto3
-from boto3 import client
+
 from cloudify import ctx
 from spotinst_sdk2 import SpotinstSession
 from cloudify.exceptions import NonRecoverableError

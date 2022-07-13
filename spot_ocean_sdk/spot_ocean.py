@@ -6,7 +6,7 @@ from cloudify.exceptions import NonRecoverableError
 def get_launch_specification_object(security_group_ids,
                                     image_id,
                                     key_pair,
-                                    cluster_id):
+                                    cluster_id=None):
     if not isinstance(security_group_ids, list):
         raise NonRecoverableError(
             'Security group Ids is expected to be a list')
