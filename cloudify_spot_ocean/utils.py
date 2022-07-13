@@ -72,7 +72,8 @@ def get_aws_client(aws_resource):
         aws_resource,
         aws_access_key_id=aws_cred.get('aws_access_key_id'),
         aws_secret_access_key=aws_cred.get('aws_secret_access_key'),
-        aws_session_token=aws_cred.get('aws_session_token')
+        aws_session_token=aws_cred.get('aws_session_token'),
+        region_name=aws_cred.get('region_name')
     )
     return client
 
@@ -102,7 +103,7 @@ def get_image(cluster_id):
 def get_cluster_version(cluster_id):
     # eks = client('eks')
     eks = get_aws_client('eks')
-    cluster = eks.describe_cluster(cluster_id)
+    cluster = eks.describe_cluster(name=cluster_id)
     if 'cluster' not in cluster or 'version' not in cluster['cluster']:
         raise NonRecoverableError(
             'Unable to determine version of EKS cluster {}, '

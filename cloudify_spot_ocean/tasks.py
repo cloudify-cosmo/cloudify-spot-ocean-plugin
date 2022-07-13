@@ -28,7 +28,9 @@ def create(ocean_client, ctx, resource_config, **_):
     launch_specification = spot_ocean.get_launch_specification_object(
         security_group_ids=resource_config.get("SecurityGroupIds"),
         image_id=resource_config.get("ImageId"),
-        key_pair=resource_config.get("KeyPair"))
+        key_pair=resource_config.get("KeyPair"),
+        cluster_id=resource_config.get("ClusterId")
+    )
 
     instance_types = spot_ocean.get_instance_types_object(
         instance_types=resource_config.get("InstanceTypes"))

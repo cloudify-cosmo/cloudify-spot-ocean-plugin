@@ -1,10 +1,16 @@
 from spotinst_sdk2.models.ocean import aws
+from cloudify_spot_ocean.utils import get_image
 from cloudify.exceptions import NonRecoverableError
 
-def get_launch_specification_object(security_group_ids, image_id, key_pair):
+
+def get_launch_specification_object(security_group_ids,
+                                    image_id,
+                                    key_pair,
+                                    cluster_id):
     if not isinstance(security_group_ids, list):
         raise NonRecoverableError(
             'Security group Ids is expected to be a list')
+    image_id = image_id or get_image(cluster_id)
     if not isinstance(image_id, str):
         raise NonRecoverableError('Image Id is expected to be a string')
     if not isinstance(key_pair, str):
