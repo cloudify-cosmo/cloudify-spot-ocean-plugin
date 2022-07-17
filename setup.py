@@ -44,7 +44,7 @@ setup(
     description='A Cloudify plugin for Spot Ocean',
     install_requires=[
         'cloudify-common>=4.5',
-        'cloudify-utilities-plugins-sdk>=0.0.61',
+        'cloudify-utilities-plugins-sdk>=0.0.77',
         'pycryptodome==3.9.7',
         'deepdiff==3.3.0',
         'spotinst_sdk2',

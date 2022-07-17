@@ -1,10 +1,10 @@
 import sys
+
 from functools import wraps
-
-from spotinst_sdk2.client import SpotinstClientException
-
 from cloudify.utils import exception_to_error_cause
 from cloudify.exceptions import NonRecoverableError
+from spotinst_sdk2.client import SpotinstClientException
+
 from . import utils
 
 
@@ -26,5 +26,6 @@ def with_spot_ocean(func):
             if hasattr(ex, 'message'):
                 ctx.logger.error('The message: {}'.format(ex.message))
             raise NonRecoverableError(
-                "Failed applying", causes=[exception_to_error_cause(ex, tb)])
+                "Spot Ocean operation failed",
+                causes=[exception_to_error_cause(ex, tb)])
     return f

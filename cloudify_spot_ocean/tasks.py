@@ -1,34 +1,36 @@
-from . import decorators
-from .utils import validate_resource_config
 from spot_ocean_sdk import spot_ocean
 from cloudify.exceptions import NonRecoverableError
+from spotinst_sdk2.client import SpotinstClientException
 
+from . import decorators
+from .utils import validate_resource
 
-@decorators.with_spot_ocean
-def create(ocean_client, ctx, resource_config, client_config):
-    expected_resource_config = [
-        "SecurityGroupIDs",
+EXPECTED_RESOURCE_CONFIG = [
+        "SecurityGroupIds",
         "KeyPair",
         "InstanceTypes",
-        "SubnetIDs",
+        "SubnetIds",
         "MinCapacity",
         "MaxCapacity",
         "TargetCapacity",
         "OceanClusterName",
-        "ClusterID",
+        "ClusterId",
         "Region"
     ]
-    if not validate_resource_config(resource_config, expected_resource_config):
-        raise NonRecoverableError(
-            'resource_config is missing parameters.\n '
-            'resource config = {}, expected to include {}'.format(
-                resource_config.keys(), expected_resource_config)
-        )
+
+
+@decorators.with_spot_ocean
+def create(ocean_client, ctx, resource_config, **_):
+    validate_resource(resource=resource_config,
+                      expected_resources=EXPECTED_RESOURCE_CONFIG,
+                      operation='resource_config')
 
     launch_specification = spot_ocean.get_launch_specification_object(
-        security_group_ids=resource_config.get("SecurityGroupIDs"),
-        image_id=resource_config.get("ImageID"),
-        key_pair=resource_config.get("KeyPair"))
+        security_group_ids=resource_config.get("SecurityGroupIds"),
+        image_id=resource_config.get("ImageId"),
+        key_pair=resource_config.get("KeyPair"),
+        cluster_id=resource_config.get("ClusterId")
+    )
 
     instance_types = spot_ocean.get_instance_types_object(
         instance_types=resource_config.get("InstanceTypes"))
@@ -36,7 +38,7 @@ def create(ocean_client, ctx, resource_config, client_config):
     compute = spot_ocean.get_compute_object(
         instance_types=instance_types,
         launch_specification=launch_specification,
-        subnet_ids=resource_config.get("SubnetIDs"))
+        subnet_ids=resource_config.get("SubnetIds"))
 
     strategy = spot_ocean.get_strategy_object()
     capacity = spot_ocean.get_capacity_object(
@@ -46,7 +48,7 @@ def create(ocean_client, ctx, resource_config, client_config):
 
     ocean = spot_ocean.get_ocean_object(
         name=resource_config.get("OceanClusterName"),
-        cluster_id=resource_config.get("ClusterID"),
+        cluster_id=resource_config.get("ClusterId"),
         region=resource_config.get("Region"),
         capacity=capacity,
         strategy=strategy,
@@ -55,22 +57,41 @@ def create(ocean_client, ctx, resource_config, client_config):
     instance_id = create_response.get("id", None)
     if not instance_id:
         raise NonRecoverableError(
-            'cluster not added successfully to spot ocean')
-    ctx.instance.runtime_properties["create_response"] = create_response
-    ctx.instance.runtime_properties["instance_id"] = instance_id
+            'EKS cluster not added successfully to spot ocean')
+    clusters = describe_all(ocean_client)
+    for i in clusters:
+        if i['name'] == resource_config.get("OceanClusterName") and\
+                i['controller_cluster_id'] == resource_config.get("ClusterId"):
+            ctx.instance.runtime_properties["create_response"] = \
+                create_response
+            ctx.instance.runtime_properties["instance_id"] = instance_id
+            return create_response
+    raise NonRecoverableError(
+        'EKS cluster not added successfully to spot ocean. create response = '
+        '{}'.format(create_response))
+
 
 @decorators.with_spot_ocean
-def delete(ocean_client, ctx, resource_config, client_config):
-    return ocean_client.delete_ocean_cluster(
-        ctx.instance.runtime_properties.get("instance_id"))
+def delete(ocean_client, ctx, instance_id=None, **_):
+    instance_id = instance_id or \
+                  ctx.instance.runtime_properties.get("instance_id")
+    while wait_for_delete(ocean_client, instance_id):
+        ocean_client.delete_ocean_cluster(instance_id)
 
 
-@decorators.with_spot_ocean
-def describe_all(ocean_client, ctx, resource_config, client_config):
+def wait_for_delete(ocean_client, instance_id):
+    try:
+        val = ocean_client.get_ocean_cluster(instance_id)
+        return val
+    except SpotinstClientException:
+        return None
+
+
+def describe_all(ocean_client, **_):
     return ocean_client.get_all_ocean_cluster()
 
 
-@decorators.with_spot_ocean
-def describe_all(ocean_client, ctx, resource_config, client_config):
-    return ocean_client.get_ocean_cluster(
-        ctx.instance.runtime_properties.get("instance_id"))
+def describe(ocean_client, ctx, instance_id=None, **_):
+    instance_id = instance_id or \
+                  ctx.instance.runtime_properties.get("instance_id")
+    return ocean_client.get_ocean_cluster(instance_id)
