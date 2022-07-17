@@ -27,41 +27,31 @@ CREATE_RESPONSE = {'id': 'o-35d60931',
 
 DESCRIBE_RESPONSE = [CREATE_RESPONSE]
 
+RESOURCE_CONFIG = {"resource_config": "resource_config",
+                   "SecurityGroupIds": ["sg-1"],
+                   "ImageId": "ami-3",
+                   "KeyPair": "key-p",
+                   "InstanceTypes": "t3.m",
+                   "SubnetIds": ["sub"],
+                   "MinCapacity": 1,
+                   "MaxCapacity": 1,
+                   "TargetCapacity": 1,
+                   "OceanClusterName": "yk1",
+                   "ClusterId": "yk2",
+                   "Region": "us-west-east-72"}
+
 
 class TestTasks(unittest.TestCase):
+    @patch('cloudify_spot_ocean.utils.get_resource_config',
+           return_value=RESOURCE_CONFIG)
     def test_create(self, *_, **__):
         ctx = mock_context(test_name="test_decorator_stores_kwargs",
                            test_node_id="test_decorator_stores_kwargs",
                            test_properties={
                                'client_config': {'spot_ocean_token': 'tok-1',
                                                  'account_id': 'act-1'},
-                               'resource_config':
-                                   {"resource_config": "resource_config",
-                                    "SecurityGroupIds": ["sg-1"],
-                                    "ImageId": "ami-3",
-                                    "KeyPair": "key-p",
-                                    "InstanceTypes": "t3.m",
-                                    "SubnetIds": ["sub"],
-                                    "MinCapacity": 1,
-                                    "MaxCapacity": 1,
-                                    "TargetCapacity": 1,
-                                    "OceanClusterName": "yk1",
-                                    "ClusterId": "yk2",
-                                    "Region": "us-west-east-72"}},
+                               'resource_config': RESOURCE_CONFIG},
                            test_runtime_properties={})
-
-        resource_config = {"resource_config": "resource_config",
-                           "SecurityGroupIds": ["sg-1"],
-                           "ImageId": "ami-3",
-                           "KeyPair": "key-p",
-                           "InstanceTypes": "t3.m",
-                           "SubnetIds": ["sub"],
-                           "MinCapacity": 1,
-                           "MaxCapacity": 1,
-                           "TargetCapacity": 1,
-                           "OceanClusterName": "OceanClusterName",
-                           "ClusterId": "ClusterId",
-                           "Region": "us-west-east-72"}
 
         with patch('cloudify_spot_ocean.utils.get_client') as ocean_client:
             ocean_client().create_ocean_cluster.return_value = CREATE_RESPONSE
@@ -69,9 +59,11 @@ class TestTasks(unittest.TestCase):
                 DESCRIBE_RESPONSE
 
             create_response = tasks.create(
-                ctx=ctx, resource_config=resource_config)
+                ctx=ctx, resource_config=RESOURCE_CONFIG)
             assert create_response == CREATE_RESPONSE
 
+    @patch('cloudify_spot_ocean.utils.get_resource_config',
+           return_value=RESOURCE_CONFIG)
     def test_delete(self, *_, **__):
         ctx = mock_context(test_name="test_decorator_stores_kwargs",
                            test_node_id="test_decorator_stores_kwargs",

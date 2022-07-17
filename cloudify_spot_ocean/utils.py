@@ -3,10 +3,10 @@ import boto3
 
 from cloudify import ctx
 from spotinst_sdk2 import SpotinstSession
+from cloudify_common_sdk.utils import get_ctx_node
 from cloudify.exceptions import NonRecoverableError
 from cloudify.utils import exception_to_error_cause
 from spotinst_sdk2.client import SpotinstClientException
-from cloudify_common_sdk.utils import get_ctx_node, get_ctx_instance
 from cloudify_common_sdk.secure_property_management import get_stored_property
 
 EXPECTED_CLIENT_CONFIG = [
