@@ -7,7 +7,7 @@ from cloudify.exceptions import NonRecoverableError
 from cloudify.utils import exception_to_error_cause
 from spotinst_sdk2.client import SpotinstClientException
 from cloudify_common_sdk.utils import get_ctx_node, get_ctx_instance
-# from loudify_common_sdk.secure_property_management import get_stored_property
+from cloudify_common_sdk.secure_property_management import get_stored_property
 
 EXPECTED_CLIENT_CONFIG = [
         "spot_ocean_token",
@@ -15,18 +15,9 @@ EXPECTED_CLIENT_CONFIG = [
     ]
 
 
-# TODO switch to new generic get_resource_config
-# def get_resource_config(target=False):
-#     """Get the cloudify.nodes.terraform.Module resource_config"""
-#     return get_stored_property(ctx, 'resource_config', target)
 def get_resource_config(target=False):
     """Get the cloudify.nodes.terraform.Module resource_config"""
-    instance = get_ctx_instance(target=target)
-    resource_config = instance.runtime_properties.get('resource_config')
-    if not resource_config or ctx.workflow_id == 'install':
-        node = get_ctx_node(target=target)
-        resource_config = node.properties.get('resource_config', {})
-    return resource_config
+    return get_stored_property(ctx, 'resource_config', target)
 
 
 def get_client_config(target=False, property_name='client_config'):
