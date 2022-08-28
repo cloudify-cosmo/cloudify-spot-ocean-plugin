@@ -1,7 +1,20 @@
 from spotinst_sdk2.models.ocean import aws
+from cloudify_spot_ocean.utils import get_image
+from cloudify.exceptions import NonRecoverableError
 
 
-def get_launch_specification_object(security_group_ids, image_id, key_pair):
+def get_launch_specification_object(security_group_ids,
+                                    image_id,
+                                    key_pair,
+                                    cluster_id=None):
+    if not isinstance(security_group_ids, list):
+        raise NonRecoverableError(
+            'Security group Ids is expected to be a list')
+    image_id = image_id or get_image(cluster_id)
+    if not isinstance(image_id, str):
+        raise NonRecoverableError('Image Id is expected to be a string')
+    if not isinstance(key_pair, str):
+        raise NonRecoverableError('Key Pair is expected to be a string')
     launch_specification = aws.LaunchSpecifications(
         security_group_ids=security_group_ids,
         image_id=image_id,
@@ -11,12 +24,16 @@ def get_launch_specification_object(security_group_ids, image_id, key_pair):
 
 
 def get_instance_types_object(instance_types):
+    if not isinstance(instance_types, str):
+        raise NonRecoverableError('Instance Types is expected to be a string')
     instance_types = aws.InstanceTypes(whitelist=[instance_types])
 
     return instance_types
 
 
 def get_compute_object(instance_types, subnet_ids, launch_specification):
+    if not isinstance(subnet_ids, list):
+        raise NonRecoverableError('Subnet Ids is expected to be a list')
     compute = aws.Compute(instance_types=instance_types,
                           subnet_ids=subnet_ids,
                           launch_specification=launch_specification)
@@ -33,12 +50,26 @@ def get_strategy_object():
 
 
 def get_capacity_object(minimum, maximum, target):
+    if not isinstance(minimum, int):
+        raise NonRecoverableError('Minimum is expected to be a integer')
+    if not isinstance(maximum, int):
+        raise NonRecoverableError('Maximum is expected to be a integer')
+    if not isinstance(target, int):
+        raise NonRecoverableError('Target is expected to be a integer')
+
     capacity = aws.Capacity(minimum=minimum, maximum=maximum, target=target)
 
     return capacity
 
 
 def get_ocean_object(name, cluster_id, region, capacity, strategy, compute):
+    if not isinstance(name, str):
+        raise NonRecoverableError('Name is expected to be a string')
+    if not isinstance(cluster_id, str):
+        raise NonRecoverableError('Cluster Id is expected to be a string')
+    if not isinstance(region, str):
+        raise NonRecoverableError('Region is expected to be a string')
+
     ocean = aws.Ocean(name=name,
                       controller_cluster_id=cluster_id,
                       region=region,

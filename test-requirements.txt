@@ -8,3 +8,4 @@ pylint==1.9.5
 # for integration and platform tests
 pytest==4.6.3
 pyyaml>=4.2b4
+cloudify-utilities-plugins-sdk>=0.0.77
