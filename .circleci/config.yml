@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   node: cloudify/public-unittest-orb@1 #orb version
-  wagonorb: cloudify/wagon-bulder-orb@2.2.0 #orb version
+  wagonorb: cloudify/wagon-bulder-orb@2 #orb version
   releaseorb: cloudify/release-orb@1 #orb version
   managerorb: cloudify/manager-orb@1
 
@@ -30,14 +30,6 @@ commands:
     steps:
       - run: ls -alR
       - run: ecosystem-test prepare-test-manager -l $TEST_LICENSE -es aws_access_key_id=$aws_access_key_id -es aws_secret_access_key=$aws_secret_access_key -es spot_account=$spot_account -es spot_token=$spot_token --bundle-path workspace/build/cloudify-plugins-bundle.tgz --yum-package python-netaddr --yum-package git -p workspace/build/*Core-py36-none-linux_x86_64.wgn workspace/build/*plugin.yaml
-
-  run_hello_world_test:
-    steps:
-      - run: ecosystem-test local-blueprint-test -b examples/blueprint-examples/hello-world-example/aws.yaml --test-id=hello-world-example -i aws_region_name=us-east-1 --on-failure=uninstall-force --timeout=1800 --nested-test=.circleci/test_cloudwatch.py
-
-  run_cf_test:
-    steps:
-      - run: ecosystem-test local-blueprint-test -b examples/blueprint-examples/virtual-machine/aws-cloudformation.yaml --test-id=virtual-machine -i aws_region_name=us-east-1 -i resource_suffix=$CIRCLE_BUILD_NUM --on-failure=uninstall-force --timeout=3000
 
   run_eks_test:
     steps:
