@@ -36,7 +36,7 @@ commands:
 
   run_eks_test:
     steps:
-      - run: ecosystem-test local-blueprint-test -b examples/blueprint.yaml --test-id=spot-ocean-eks -i aws_region_name=eu-west-1 -i eks_cluster_name=test-$CIRCLE_BUILD_NUM --on-failure=uninstall-force --timeout=3000
+      - run: ecosystem-test local-blueprint-test -b examples/blueprint.yaml --test-id=spot-ocean-eks -i aws_region_name=me-central-1 -i eks_cluster_name=test-$CIRCLE_BUILD_NUM --on-failure=uninstall-force --timeout=3000
 
 jobs:
 
