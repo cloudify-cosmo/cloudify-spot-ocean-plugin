@@ -90,8 +90,8 @@ def get_image(cluster_id):
     #     ]
     # )
     # if not images.get('Images'):
-    #     raise NonRecoverableError('No Image AMI was provided and no image was '
-    #                               'found. Please provide an Image AMI')
+    #     raise NonRecoverableError('No Image AMI was provided and no image
+    #     was found. Please provide an Image AMI')
     # oldest_to_newest = sorted(images.get('Images'),
     #                           key=lambda x: x['CreationDate'])
     #
