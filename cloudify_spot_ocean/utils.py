@@ -75,8 +75,8 @@ def get_image(cluster_id):
                 '/amazon-linux-2/recommended/image_id'
     result = ssm.get_parameters(Names=[ssm_input])
     if not result.get('Parameters'):
-        raise NonRecoverableError('No Image AMI was provided and no image was '
-                                  'found. Please provide an Image AMI')
+        raise NonRecoverableError('No Image AMI was provided and no image '
+                                  'was found. Please provide an Image AMI')
     image_id = result['Parameters'][0]['Value']
     return image_id
     # ec2 = get_aws_client("ec2")
