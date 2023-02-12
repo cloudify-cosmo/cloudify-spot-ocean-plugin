@@ -1,2 +1,4 @@
+0.0.2:
+    - updated ami look up method
 0.0.1:
     - first version
