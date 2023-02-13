@@ -69,25 +69,16 @@ def get_aws_client(aws_resource):
 
 
 def get_image(cluster_id):
-    # ec2 = client('ec2')
-    ec2 = get_aws_client("ec2")
+    ssm = get_aws_client("ssm")
     cluster_version = get_cluster_version(cluster_id)
-    images = ec2.describe_images(
-        Filters=[
-            {'Name': 'owner-id', 'Values': ['602401143452']},
-            {'Name': 'name', 'Values': ['amazon-eks-node-' +
-                                        cluster_version +
-                                        '*']}
-        ]
-    )
-    if not images.get('Images'):
-        raise NonRecoverableError('No Image AMI was provided and no image was '
-                                  'found. Please provide an Image AMI')
-    oldest_to_newest = sorted(images.get('Images'),
-                              key=lambda x: x['CreationDate'])
-
-    most_recent_image_id = oldest_to_newest[-1]['ImageId']
-    return most_recent_image_id
+    ssm_input = '/aws/service/eks/optimized-ami/' + cluster_version +\
+                '/amazon-linux-2/recommended/image_id'
+    result = ssm.get_parameters(Names=[ssm_input])
+    if not result.get('Parameters'):
+        raise NonRecoverableError('No Image AMI was provided and no image '
+                                  'was found. Please provide an Image AMI')
+    image_id = result['Parameters'][0]['Value']
+    return image_id
 
 
 def get_cluster_version(cluster_id):
