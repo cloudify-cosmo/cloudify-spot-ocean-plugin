@@ -83,17 +83,8 @@ workflows:
 #          filters:
 #            branches:
 #              only: /([0-9\.]*\-build|main|dev)/
-      - wagonorb/build_bundle:
-#          filters:
-#            branches:
-#              only: /([0-9\.]*\-build|main|dev)/
-          requires:
-            - wagonorb/wagon
-            - wagonorb/rhel_wagon
-            - wagonorb/arch64_wagon
       - cf_integration_tests_py3:
           requires:
-            - wagonorb/build_bundle
             - wagonorb/wagon
             - wagonorb/rhel_wagon
             - wagonorb/arch64_wagon
@@ -144,17 +135,8 @@ workflows:
           filters:
             branches:
               only: /([0-9\.]*\-build|main|dev)/
-      - wagonorb/build_bundle:
-          filters:
-            branches:
-              only: /main/
-          requires:
-            - wagonorb/wagon
-            - wagonorb/rhel_wagon
-            - wagonorb/arch64_wagon
       - cf_integration_tests_py3:
           requires:
-            - wagonorb/build_bundle
             - wagonorb/wagon
             - wagonorb/rhel_wagon
             - wagonorb/arch64_wagon
@@ -187,17 +169,8 @@ workflows:
           filters:
             branches:
               only: /([0-9\.]*\-build|main|dev)/
-      - wagonorb/build_bundle:
-          filters:
-            branches:
-              only: /main/
-          requires:
-            - wagonorb/wagon
-            - wagonorb/rhel_wagon
-            - wagonorb/arch64_wagon
       - cf_integration_tests_py3:
           requires:
-            - wagonorb/build_bundle
             - wagonorb/wagon
             - wagonorb/rhel_wagon
             - wagonorb/arch64_wagon
@@ -231,17 +204,8 @@ workflows:
           filters:
             branches:
               only: /([0-9\.]*\-build|main|dev)/
-      - wagonorb/build_bundle:
-          filters:
-            branches:
-              only: /main/
-          requires:
-            - wagonorb/wagon
-            - wagonorb/rhel_wagon
-            - wagonorb/arch64_wagon
       - cf_integration_tests_py3:
           requires:
-            - wagonorb/build_bundle
             - wagonorb/wagon
             - wagonorb/rhel_wagon
             - wagonorb/arch64_wagon
