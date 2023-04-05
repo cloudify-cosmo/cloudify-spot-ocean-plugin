@@ -107,6 +107,8 @@ workflows:
             - wagonorb/rhel_wagon
             - wagonorb/arch64_wagon
       - cf_integration_tests_py3:
+          context: 
+            - slack-secrets
           requires:
             - wagonorb/build_bundle
             - wagonorb/wagon
@@ -171,6 +173,8 @@ workflows:
             - wagonorb/rhel_wagon
             - wagonorb/arch64_wagon
       - cf_integration_tests_py3:
+          context: 
+            - slack-secrets
           requires:
             - wagonorb/build_bundle
             - wagonorb/wagon
@@ -217,6 +221,8 @@ workflows:
             - wagonorb/rhel_wagon
             - wagonorb/arch64_wagon
       - cf_integration_tests_py3:
+          context: 
+            - slack-secrets
           requires:
             - wagonorb/build_bundle
             - wagonorb/wagon
@@ -264,6 +270,8 @@ workflows:
             - wagonorb/rhel_wagon
             - wagonorb/arch64_wagon
       - cf_integration_tests_py3:
+          context: 
+            - slack-secrets
           requires:
             - wagonorb/build_bundle
             - wagonorb/wagon
