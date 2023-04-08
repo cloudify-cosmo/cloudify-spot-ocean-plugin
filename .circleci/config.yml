@@ -1,5 +1,9 @@
 version: 2.1
 
+job-post-steps: &job-post-steps
+  post-steps:
+   - slack/notify_failed
+
 unittest-post-steps: &unittest-post-steps
   post-steps:
     - store_test_results:
@@ -46,10 +50,7 @@ commands:
 
   run_eks_test:
     steps:
-      - run: ecosystem-test local-blueprint-test -b examples/blueprint.yaml --test-id=spot-ocean-eks -i aws_region_name=me-central-1 -i eks_cluster_name=test-$CIRCLE_BUILD_NUM --on-failure=uninstall-force --timeout=3000 | tee -a run_eks_test.log
-      - store_artifacts:
-          path: run_eks_test.log
-      - slack/notify_failed
+      - run: ecosystem-test local-blueprint-test -b examples/blueprint.yaml --test-id=spot-ocean-eks -i aws_region_name=me-central-1 -i eks_cluster_name=test-$CIRCLE_BUILD_NUM --on-failure=uninstall-force --timeout=3000
 jobs:
 
   cf_integration_tests_py3:
@@ -107,8 +108,6 @@ workflows:
             - wagonorb/rhel_wagon
             - wagonorb/arch64_wagon
       - cf_integration_tests_py3:
-          context: 
-            - slack-secrets
           requires:
             - wagonorb/build_bundle
             - wagonorb/wagon
@@ -175,6 +174,7 @@ workflows:
       - cf_integration_tests_py3:
           context: 
             - slack-secrets
+          <<: *job-post-steps
           requires:
             - wagonorb/build_bundle
             - wagonorb/wagon
@@ -223,6 +223,7 @@ workflows:
       - cf_integration_tests_py3:
           context: 
             - slack-secrets
+          <<: *job-post-steps
           requires:
             - wagonorb/build_bundle
             - wagonorb/wagon
@@ -272,6 +273,7 @@ workflows:
       - cf_integration_tests_py3:
           context: 
             - slack-secrets
+          <<: *job-post-steps
           requires:
             - wagonorb/build_bundle
             - wagonorb/wagon
