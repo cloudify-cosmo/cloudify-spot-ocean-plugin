@@ -2,7 +2,7 @@ plugins:
   spot-ocean:
     executor: central_deployment_agent
     package_name: cloudify-spot-ocean-plugin
-    package_version: '0.0.2'
+    package_version: '0.0.3'
 
 data_types:
 
