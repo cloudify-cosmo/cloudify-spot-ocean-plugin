@@ -1,3 +1,5 @@
+0.0.4:
+    - fix name in plugin yaml.
 0.0.3:
     - add __version__.py file in cloudify_spot_ocean folder.
 0.0.2:

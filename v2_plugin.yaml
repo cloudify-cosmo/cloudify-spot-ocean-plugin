@@ -1,8 +1,8 @@
 plugins:
-  spot-ocean:
+  spotocean:
     executor: central_deployment_agent
     package_name: cloudify-spot-ocean-plugin
-    package_version: '0.0.3'
+    package_version: '0.0.4'
 
 data_types:
 
@@ -117,9 +117,9 @@ node_types:
     interfaces:
       cloudify.interfaces.lifecycle:
         create:
-          implementation: spot-ocean.cloudify_spot_ocean.tasks.create
+          implementation: spotocean.cloudify_spot_ocean.tasks.create
         delete:
-          implementation: spot-ocean.cloudify_spot_ocean.tasks.delete
+          implementation: spotocean.cloudify_spot_ocean.tasks.delete
 
 blueprint_labels:
   obj-type:
