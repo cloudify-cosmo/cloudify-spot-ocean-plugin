@@ -1,0 +1,133 @@
+plugins:
+  spotocean:
+    executor: central_deployment_agent
+    package_name: cloudify-spot-ocean-plugin
+    package_version: '0.0.4'
+
+data_types:
+
+  cloudify.datatypes.SpotOcean.ConnectionConfig:
+    properties:
+      account_id:
+        type: string
+        description: The account ID of the spot ocean user.
+        required: true
+      spot_ocean_token:
+        type: string
+        description: The Token of the spot ocean user.
+        required: true
+
+  cloudify.datatypes.SpotOcean.Cluster.config:
+    properties:
+      OceanClusterName:
+        type: string
+        description: The for cluster in Spot Ocean.
+        required: true
+      ClusterId:
+        type: string
+        description: The name of the EKS cluster to operate on.
+        required: true
+      Region:
+        type: string
+        description: AWS region.
+        required: true
+      InstanceTypes:
+        type: string
+        description: AWS Instance Type to be used.
+        default: "t3.medium"
+      SecurityGroupIds:
+        type: list
+        description: A list of the security groups ids in the EKS cluster.
+        required: true
+      ImageId:
+        type: string
+        required: false
+      KeyPair:
+        type: string
+        description: The key pair of the EKS cluster
+        required: true
+      SubnetIds:
+        type: list
+        description: A list of subnet IDs.
+        required: true
+      MinCapacity:
+        type: integer
+        default: 1
+      MaxCapacity:
+        type: integer
+        default: 1
+      TargetCapacity:
+        type: integer
+        default: 1
+      kwargs:
+        description:
+        default: { }
+
+  cloudify.datatypes.SpotOcean.AWSConnectionConfig:
+    properties:
+      aws_session_token:
+        description: Session token.
+        type: string
+        required: false
+      aws_access_key_id:
+        description: >
+          The ID of your AWS ACCESS KEY ID.
+        type: string
+        required: false
+      aws_secret_access_key:
+        description: >
+          The ID of your AWS SECRET ACCESS KEY.
+        type: string
+        required: false
+      region_name:
+        description: >
+          The server region name, such as us-east-1.
+          (Not us-east-1b, which is an availability zone, or
+          US East, which is a Region.)
+        type: string
+        required: false
+dsl_definitions:
+
+  # Every resource uses this property unless noted.
+  client_config: &client_config
+    client_config:
+      description: >
+        A dictionary of values to pass to authenticate with the SpotOcean API.
+      type: cloudify.datatypes.SpotOcean.ConnectionConfig
+
+  aws_config: &aws_config
+    aws_config:
+      description: >
+        A dictionary of values to pass to authenticate with the AWS API.
+      type: cloudify.datatypes.SpotOcean.AWSConnectionConfig
+
+
+node_types:
+  cloudify.nodes.SpotOcean.cluster:
+    derived_from: cloudify.nodes.Root
+    properties:
+      <<: *client_config
+      <<: *aws_config
+      resource_config:
+        description: >
+          Data of specific parts of the Cluster needed inorder for
+          spot ocean to monitor the cluster.
+        type: cloudify.datatypes.SpotOcean.Cluster.config
+        required: true
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: spotocean.cloudify_spot_ocean.tasks.create
+        delete:
+          implementation: spotocean.cloudify_spot_ocean.tasks.delete
+
+
+blueprint_labels:
+  obj-type:
+    values:
+      - spotocean
+
+labels:
+  obj-type:
+    values:
+      - spotocean
