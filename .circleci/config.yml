@@ -157,10 +157,10 @@ workflows:
           filters:
             branches:
               only: /([0-9\.]*\-build|main|dev)/
-      # - wagonorb/wagon_311:
-      #     filters:
-      #       branches:
-      #         only: /([0-9\.]*\-build|master|dev)/
+      - wagonorb/wagon_311:
+          filters:
+            branches:
+              only: /([0-9\.]*\-build|master|dev)/
       - wagonorb/arch64_wagon:
           filters:
             branches:
@@ -202,10 +202,10 @@ workflows:
           filters:
             branches:
               only: /([0-9\.]*\-build|main|dev)/
-      # - wagonorb/wagon_311:
-      #     filters:
-      #       branches:
-      #         only: /([0-9\.]*\-build|master|dev)/
+      - wagonorb/wagon_311:
+          filters:
+            branches:
+              only: /([0-9\.]*\-build|master|dev)/
       - wagonorb/arch64_wagon:
           filters:
             branches:
@@ -248,10 +248,10 @@ workflows:
           filters:
             branches:
               only: /([0-9\.]*\-build|main|dev)/
-      # - wagonorb/wagon_311:
-      #     filters:
-      #       branches:
-      #         only: /([0-9\.]*\-build|master|dev)/
+      - wagonorb/wagon_311:
+          filters:
+            branches:
+              only: /([0-9\.]*\-build|master|dev)/
       - wagonorb/arch64_wagon:
           filters:
             branches:
