@@ -118,7 +118,7 @@ workflows:
       - wagonorb/wagon_311:
           filters:
             branches:
-              only: /([0-9\.]*\-build|master|dev)/
+              only: /([0-9\.]*\-build|main|dev)/
       - cf_integration_tests_py3:
           requires:
             - wagonorb/wagon_311
@@ -164,7 +164,7 @@ workflows:
       - wagonorb/wagon_311:
           filters:
             branches:
-              only: /([0-9\.]*\-build|master|dev)/
+              only: /([0-9\.]*\-build|main|dev)/
       - cf_integration_tests_py3:
           context: 
             - slack-secrets
@@ -174,85 +174,3 @@ workflows:
           filters:
             branches:
               only: /([0-9\.]*\-build|main|dev)/
-
-
-  monday_thursday:
-    triggers:
-    - schedule:
-        cron: "0 3 * * 1,4"
-        filters:
-          branches:
-            only:
-              - main
-    jobs:
-      - node/check_py3_compat_job
-      - node/unittests_job:
-          context: 
-            - slack-secrets
-          <<: *unittest-post-steps
-      - node/validate_version_job
-      - wagonorb/rhel_wagon:
-          filters:
-            branches:
-              only: /([0-9\.]*\-build|main|dev)/
-      - wagonorb/wagon:
-          filters:
-            branches:
-              only: /([0-9\.]*\-build|main|dev)/
-      - wagonorb/arch64_wagon:
-          filters:
-            branches:
-              only: /([0-9\.]*\-build|main|dev)/
-      - cf_integration_tests_py3:
-          context: 
-            - slack-secrets
-          <<: *job-post-steps
-          requires:
-            - wagonorb/wagon
-            - wagonorb/rhel_wagon
-            - wagonorb/arch64_wagon
-          filters:
-            branches:
-              only: /([0-9\.]*\-build|main|dev)/
-
-
-
-  tuesday_friday_saturday:
-    triggers:
-    - schedule:
-        cron: "0 3 * * 2,5,6"
-        filters:
-          branches:
-            only:
-              - main
-    jobs:
-      - node/check_py3_compat_job
-      - node/unittests_job:
-          context: 
-            - slack-secrets
-          <<: *unittest-post-steps
-      - node/validate_version_job
-      - wagonorb/rhel_wagon:
-          filters:
-            branches:
-              only: /([0-9\.]*\-build|main|dev)/
-      - wagonorb/wagon:
-          filters:
-            branches:
-              only: /([0-9\.]*\-build|main|dev)/
-      - wagonorb/arch64_wagon:
-          filters:
-            branches:
-              only: /([0-9\.]*\-build|main|dev)/
-      - cf_integration_tests_py3:
-          context: 
-            - slack-secrets
-          <<: *job-post-steps
-          requires:
-            - wagonorb/wagon
-            - wagonorb/rhel_wagon
-            - wagonorb/arch64_wagon
-          filters:
-            branches:
-              only: /([0-9\.]*\-build|main|dev)/
-
