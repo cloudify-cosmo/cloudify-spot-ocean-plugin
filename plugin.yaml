@@ -2,7 +2,7 @@ plugins:
   spotocean:
     executor: central_deployment_agent
     package_name: cloudify-spot-ocean-plugin
-    package_version: 0.0.4
+    package_version: 0.0.5
 data_types:
   cloudify.datatypes.SpotOcean.ConnectionConfig:
     properties:
