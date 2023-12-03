@@ -1,0 +1,2 @@
+cloudify-common>=5.1.0,<7.0
+cloudify-utilities-plugins-sdk>=0.0.61

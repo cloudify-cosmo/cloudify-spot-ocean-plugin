@@ -1,5 +1,0 @@
-cloudify-common>=5.1.0
-cloudify-utilities-plugins-sdk>=0.0.61
-requests>=2.25.0,<3.0.0
-spotinst_sdk2
-boto3
