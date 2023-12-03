@@ -14,9 +14,9 @@
 
 import os
 import re
+import sys
 import pathlib
-from setuptools import setup
-from setuptools import find_packages
+from setuptools import setup, find_packages
 
 
 def get_version():
@@ -27,21 +27,36 @@ def get_version():
         return re.search(r'\d+.\d+.\d+', var).group()
 
 
+install_requires = [
+        'pycryptodome==3.9.7',
+        'requests>=2.25.0,<3.0.0',
+        'spotinst_sdk2',
+        'botocore',
+        'boto3'
+]
+if sys.version_info.major == 3 and sys.version_info.minor == 6:
+    packages = ['cloudify_spot_ocean', 'spot_ocean_sdk']
+    install_requires += [
+        'deepdiff==3.3.0',
+        'cloudify-common>=5.1.0,<7.0',
+        'cloudify-utilities-plugins-sdk>=0.0.127',
+    ]
+else:
+    packages = find_packages()
+    install_requires += [
+        'deepdiff==5.7.0',
+        'fusion-common',
+        'cloudify-utilities-plugins-sdk',
+    ]
+
+
 setup(
     name='cloudify-spot-ocean-plugin',
     version=get_version(),
     author='Cloudify Platform Ltd.',
     author_email='hello@cloudify.co',
     license='LICENSE',
-    packages=find_packages(exclude=['tests*']),
+    packages=packages,
     description='A Cloudify plugin for Spot Ocean',
-    install_requires=[
-        'cloudify-common>=4.5',
-        'cloudify-utilities-plugins-sdk>=0.0.77',
-        'pycryptodome==3.9.7',
-        'deepdiff==3.3.0',
-        'spotinst_sdk2',
-        'botocore',
-        'boto3'
-    ]
+    install_requires=install_requires
 )
